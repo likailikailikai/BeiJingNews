@@ -2,6 +2,7 @@ package com.atguigu.beijingnews.pager;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.TextView;
@@ -22,6 +23,9 @@ public class NewsCenterPager extends BasePager {
     public void initData() {
         super.initData();
         ib_menu.setVisibility(View.VISIBLE);
+
+        Log.e("TAG","新闻面加载数据了");
+
         //设置标题
         tv_title.setText("新闻");
         //实例视图
@@ -33,5 +37,7 @@ public class NewsCenterPager extends BasePager {
 
         //和父类的FrameLayout结合
         fl_main.addView(textView);
+
+        //联网请求
     }
 }

@@ -7,11 +7,14 @@ import android.view.ViewGroup;
 import android.widget.RadioGroup;
 
 import com.atguigu.beijingnews.R;
+import com.atguigu.beijingnews.activity.MainActivity;
 import com.atguigu.beijingnews.base.BaseFragment;
 import com.atguigu.beijingnews.base.BasePager;
 import com.atguigu.beijingnews.pager.HomePager;
 import com.atguigu.beijingnews.pager.NewsCenterPager;
 import com.atguigu.beijingnews.pager.SettingPager;
+import com.atguigu.beijingnews.view.NoScrollViewPager;
+import com.slidingmenu.lib.SlidingMenu;
 
 import java.util.ArrayList;
 
@@ -25,10 +28,13 @@ import butterknife.InjectView;
 
 public class ContentFragment extends BaseFragment {
     @InjectView(R.id.viewpager)
-    ViewPager viewpager;
+    NoScrollViewPager viewpager;
     @InjectView(R.id.rg_main)
     RadioGroup rgMain;
 
+    /**
+     * 三个页面的集合
+     */
     private ArrayList<BasePager> basePagers;
 
     @Override
@@ -47,8 +53,10 @@ public class ContentFragment extends BaseFragment {
         //初始化3个页面
         initPager();
 
+        //设置适配器
         setAdapter();
 
+        //设置RadioGroup状态选中的监听
         initListener();
     }
 
@@ -56,12 +64,18 @@ public class ContentFragment extends BaseFragment {
         rgMain.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
+                //先默认设置不可以滑动
+                MainActivity mainActivity = (MainActivity) mContext;
+                mainActivity.getSlidingMenu().setTouchModeAbove(SlidingMenu.TOUCHMODE_NONE);
                 switch (checkedId){
                     case R.id.rb_home:
                         viewpager.setCurrentItem(0,false);
                         break;
                     case R.id.rb_news:
+                        //Viewpager，切换到不同页面的方法
                         viewpager.setCurrentItem(1,false);
+                        //当切换到新闻的时候，修改成可以滑动
+                        mainActivity.getSlidingMenu().setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
                         break;
                     case R.id.rb_setting:
                         viewpager.setCurrentItem(2,false);
@@ -70,6 +84,39 @@ public class ContentFragment extends BaseFragment {
             }
         });
         rgMain.check(R.id.rb_news);
+
+        //监听页面的选中
+        viewpager.addOnPageChangeListener(new MyOnPageChangeListener());
+        basePagers.get(1).initData();//孩子的视图和父类的FrameLayout结合
+    }
+
+    /**
+     * 得到新闻中心
+     * @return
+     */
+    public NewsCenterPager getNewsCenterPager() {
+        return (NewsCenterPager) basePagers.get(1);
+    }
+
+    class MyOnPageChangeListener implements ViewPager.OnPageChangeListener{
+
+        @Override
+        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+        }
+
+        @Override
+        public void onPageSelected(int position) {
+//            BasePager basePager = basePagers.get(position);//HomePager、NewsCenterPager,SetttingPager
+            //调用initData
+            basePagers.get(position).initData();//孩子的视图和父类的FrameLayout结合
+
+        }
+
+        @Override
+        public void onPageScrollStateChanged(int state) {
+
+        }
     }
 
     /**
@@ -78,7 +125,7 @@ public class ContentFragment extends BaseFragment {
     private void setAdapter() {
         viewpager.setAdapter(new MyPagerAdapter());
     }
-    class MyPagerAdapter extends PagerAdapter {
+    class MyPagerAdapter extends PagerAdapter{
 
         @Override
         public int getCount() {
@@ -97,7 +144,7 @@ public class ContentFragment extends BaseFragment {
             View rootView = basePager.rootView;//代表不同页面的实例
 
             //调用initData
-            basePager.initData();
+//            basePager.initData();//孩子的视图和父类的FrameLayout结合
 
             container.addView(rootView);
 
