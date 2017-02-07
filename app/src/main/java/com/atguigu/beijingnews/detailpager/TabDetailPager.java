@@ -17,6 +17,7 @@ import com.atguigu.beijingnews.base.MenuDetailBasePager;
 import com.atguigu.beijingnews.bean.NewsCenterBean;
 import com.atguigu.beijingnews.bean.TabDetailPagerBean;
 import com.atguigu.beijingnews.utils.Constants;
+import com.atguigu.beijingnews.utils.DensityUtil;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.gson.Gson;
@@ -47,6 +48,7 @@ public class TabDetailPager extends MenuDetailBasePager {
 
     private String url;
     private TabDetailPagerAdapter adapter;
+    private int prePosition;
     /**
      * 列表数据
      */
@@ -128,7 +130,31 @@ public class TabDetailPager extends MenuDetailBasePager {
         viewpager.setAdapter(new MyPagerAdapter());
         //监听ViewPager页面的变化
         viewpager.addOnPageChangeListener(new MyOnPageChangeListener());
-        tvTitle.setText(topnews.get(0).getTitle());
+        tvTitle.setText(topnews.get(prePosition).getTitle());
+
+        //把之前所有的移除
+        llGroupPoint.removeAllViews();
+        //添加红点
+        for (int i = 0; i < topnews.size(); i++) {
+
+
+            //添加到线性布局
+            ImageView point = new ImageView(mContext);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(-2, ViewGroup.LayoutParams.WRAP_CONTENT);
+            if (i != 0) {
+                //设置距离左边的距离
+                params.leftMargin = DensityUtil.dip2px(mContext, 8);
+                point.setEnabled(false);
+            } else {
+                point.setEnabled(true);
+            }
+            point.setLayoutParams(params);
+            //设置图片背景选择器
+            point.setBackgroundResource(R.drawable.point_selector);
+
+
+            llGroupPoint.addView(point);
+        }
 
 
     }
@@ -137,6 +163,12 @@ public class TabDetailPager extends MenuDetailBasePager {
 
         @Override
         public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            //先把之前的变灰
+
+            llGroupPoint.getChildAt(prePosition).setEnabled(false);
+            //把当前变高亮
+            llGroupPoint.getChildAt(position).setEnabled(true);
+            prePosition = position;
 
         }
 
