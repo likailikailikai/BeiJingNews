@@ -17,7 +17,7 @@ public abstract class BaseFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mContext = getActivity();
+        mContext = getActivity();//MainActivity
     }
 
     @Nullable
@@ -27,7 +27,7 @@ public abstract class BaseFragment extends Fragment {
     }
 
     /**
-     * 由子类实现各自的视图
+     * 有子类实现各自的视图
      * @return
      */
     public abstract View initView() ;
@@ -38,11 +38,12 @@ public abstract class BaseFragment extends Fragment {
         initData();
     }
 
-    /*
-    1 绑定数据
-    2 请求网络得到数据，在绑定数据
+    /**
+     * 1.绑定数据
+     * 2.请求网络得到数据，再绑定数据
      */
     public void initData() {
 
     }
+
 }
