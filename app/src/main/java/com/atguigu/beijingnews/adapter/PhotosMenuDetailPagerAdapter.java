@@ -4,11 +4,19 @@ import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.atguigu.baselibrary.Constants;
 import com.atguigu.beijingnews.R;
 import com.atguigu.beijingnews.bean.PhotosMenuDetailPagerBean;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import java.util.List;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 
 /**
  * Created by Baby on 2017/2/9.
@@ -27,13 +35,22 @@ public class PhotosMenuDetailPagerAdapter extends RecyclerView.Adapter<PhotosMen
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = View.inflate(mContext, R.layout.item_photosmenu_detail_pager,null);
+        View itemView = View.inflate(mContext, R.layout.item_photosmenu_detail_pager, null);
         return new ViewHolder(itemView);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-
+        //1、根据位置得到数据
+        PhotosMenuDetailPagerBean.DataEntity.NewsEntity newsEntity = datas.get(position);
+        holder.tvTitle.setText(newsEntity.getTitle());
+        //设置图片
+        //加载图片
+        Glide.with(mContext).load(Constants.BASE_URL + newsEntity.getListimage())
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .placeholder(R.drawable.kulou)
+                .error(R.drawable.kulou)
+                .into(holder.ivIcon);
     }
 
     @Override
@@ -41,10 +58,17 @@ public class PhotosMenuDetailPagerAdapter extends RecyclerView.Adapter<PhotosMen
         return datas.size();
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder{
+    static class ViewHolder extends RecyclerView.ViewHolder {
 
-        public ViewHolder(View itemView) {
-            super(itemView);
+        @InjectView(R.id.iv_icon)
+        ImageView ivIcon;
+        @InjectView(R.id.tv_title)
+        TextView tvTitle;
+
+        ViewHolder(View view) {
+            super(view);
+            ButterKnife.inject(this, view);
         }
     }
+
 }

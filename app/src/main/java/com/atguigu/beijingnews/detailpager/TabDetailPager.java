@@ -410,9 +410,9 @@ public class TabDetailPager extends MenuDetailBasePager {
             Glide.with(mContext).load(Constants.BASE_URL + topnewsEntity.getTopimage())
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     //设置默认图片
-                    .placeholder(R.drawable.news_pic_default)
+                    .placeholder(R.drawable.kulou)
                     //请求图片失败
-                    .error(R.drawable.news_pic_default)
+                    .error(R.drawable.kulou)
                     .into(imageView);
             //添加到ViewPager和返回
             container.addView(imageView);

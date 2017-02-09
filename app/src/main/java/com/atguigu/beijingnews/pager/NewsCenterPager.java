@@ -237,14 +237,28 @@ public class NewsCenterPager extends BasePager {
         tv_title.setText(dataBeanList.get(prePosition).getTitle());
 
 
-        MenuDetailBasePager menuDetailBasePager = menuDetailBasePagers.get(prePosition);
+        final MenuDetailBasePager menuDetailBasePager = menuDetailBasePagers.get(prePosition);
         //调用
         menuDetailBasePager.initData();
         //视图
         View rootView = menuDetailBasePager.rootView;
         fl_main.removeAllViews();//移除之前的
         fl_main.addView(rootView);
-
+        
+        if(prePosition == 2) {
+            //组图
+            ib_swcih_list_gird.setVisibility(View.VISIBLE);
+            ib_swcih_list_gird.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    PhotosMenuDetailPager photosMenuDetailPager = (PhotosMenuDetailPager) menuDetailBasePagers.get(2);
+                    photosMenuDetailPager.swichListGird(ib_swcih_list_gird);
+                }
+            });
+        }else{
+            //其他
+            ib_swcih_list_gird.setVisibility(View.GONE);
+        }
 
     }
 }

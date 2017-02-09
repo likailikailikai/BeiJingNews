@@ -70,8 +70,8 @@ public class TabDetailPagerAdapter extends BaseAdapter {
         //加载图片
         Glide.with(mContext).load(Constants.BASE_URL + newsEntity.getListimage())
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .placeholder(R.drawable.news_pic_default)
-                .error(R.drawable.news_pic_default)
+                .placeholder(R.drawable.kulou)
+                .error(R.drawable.kulou)
                 .into(viewHolder.ivIcon);
 
         String idArray = CacheUtils.getString(mContext, ID_ARRAY);
