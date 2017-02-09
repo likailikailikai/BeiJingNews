@@ -1,12 +1,14 @@
 package com.atguigu.beijingnews.detailpager;
 
 import android.content.Context;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 
 import com.atguigu.baselibrary.Constants;
 import com.atguigu.beijingnews.R;
+import com.atguigu.beijingnews.adapter.PhotosMenuDetailPagerAdapter;
 import com.atguigu.beijingnews.base.MenuDetailBasePager;
 import com.atguigu.beijingnews.bean.NewsCenterBean;
 import com.atguigu.beijingnews.bean.PhotosMenuDetailPagerBean;
@@ -27,6 +29,7 @@ import butterknife.InjectView;
 public class PhotosMenuDetailPager extends MenuDetailBasePager {
 
     private final NewsCenterBean.DataBean dataBean;
+    private PhotosMenuDetailPagerAdapter adapter;
     @InjectView(R.id.recyclerview)
     RecyclerView recyclerview;
     private String url;
@@ -83,7 +86,14 @@ public class PhotosMenuDetailPager extends MenuDetailBasePager {
 
     private void processData(String json) {
         PhotosMenuDetailPagerBean bean = new Gson().fromJson(json,PhotosMenuDetailPagerBean.class);
-
         Log.e("TAG","数组解析数据成功==="+ bean.getData().getNews().get(0).getTitle());
+
+        //设置RecycerView的适配器
+        adapter = new PhotosMenuDetailPagerAdapter(mContext,bean.getData().getNews());
+        recyclerview.setAdapter(adapter);
+
+        //设置布局管理器
+        recyclerview.setLayoutManager(new LinearLayoutManager(mContext,LinearLayoutManager.VERTICAL,false));
+
     }
 }
