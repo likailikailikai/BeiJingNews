@@ -405,8 +405,9 @@ public class TabDetailPager extends MenuDetailBasePager {
             ImageView imageView = new ImageView(mContext);
             imageView.setScaleType(ImageView.ScaleType.FIT_XY);
             //设置默认的和联网请求
+            final TabDetailPagerBean.DataEntity.TopnewsEntity topnewsEntity = topnews.get(position);
             //加载图片
-            Glide.with(mContext).load(Constants.BASE_URL + topnews.get(position).getTopimage())
+            Glide.with(mContext).load(Constants.BASE_URL + topnewsEntity.getTopimage())
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     //设置默认图片
                     .placeholder(R.drawable.news_pic_default)
@@ -428,7 +429,17 @@ public class TabDetailPager extends MenuDetailBasePager {
                             handler.postDelayed(new MyRunnable(),3000);
                             break;
                     }
-                    return true;
+                    return false;
+                }
+            });
+            //顶部轮播图点击事件
+            imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    //跳转到新闻的浏览页面
+                    Intent intent = new Intent(mContext,NewsDetailActivity.class);
+                    intent.putExtra("url",Constants.BASE_URL+topnewsEntity.getUrl());
+                    mContext.startActivity(intent);
                 }
             });
 
