@@ -1,6 +1,7 @@
 package com.atguigu.beijingnews.detailpager;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
@@ -18,10 +19,12 @@ import com.atguigu.baselibrary.CacheUtils;
 import com.atguigu.baselibrary.Constants;
 import com.atguigu.baselibrary.DensityUtil;
 import com.atguigu.beijingnews.R;
+import com.atguigu.beijingnews.activity.NewsDetailActivity;
 import com.atguigu.beijingnews.adapter.TabDetailPagerAdapter;
 import com.atguigu.beijingnews.base.MenuDetailBasePager;
 import com.atguigu.beijingnews.bean.NewsCenterBean;
 import com.atguigu.beijingnews.bean.TabDetailPagerBean;
+import com.atguigu.beijingnews.view.HorizontalScrollViewPager;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.gson.Gson;
@@ -51,7 +54,7 @@ public class TabDetailPager extends MenuDetailBasePager {
     PullToRefreshListView refreshListView;
     ListView listview;
 
-    ViewPager viewpager;
+    HorizontalScrollViewPager viewpager;
     TextView tvTitle;
     LinearLayout llGroupPoint;
 
@@ -92,7 +95,7 @@ public class TabDetailPager extends MenuDetailBasePager {
         listview = refreshListView.getRefreshableView();
 
         View headerView = View.inflate(mContext, R.layout.header_view, null);
-        viewpager = (ViewPager) headerView.findViewById(R.id.viewpager);
+        viewpager = (HorizontalScrollViewPager) headerView.findViewById(R.id.viewpager);
         tvTitle = (TextView) headerView.findViewById(R.id.tv_title);
         llGroupPoint = (LinearLayout) headerView.findViewById(R.id.ll_group_point);
 
@@ -116,18 +119,22 @@ public class TabDetailPager extends MenuDetailBasePager {
                 TabDetailPagerBean.DataEntity.NewsEntity newsEntity = news.get(position - 2);
                 String title = newsEntity.getTitle();
                 int ids = newsEntity.getId();
-                Log.e("TAG","title=="+title+",id=="+ids);
+                Log.e("TAG", "title==" + title + ",id==" + ids);
 
                 //1、获取是否已经存在，如果不存在再保存
                 String idArray = CacheUtils.getString(mContext, ID_ARRAY);
-                if(!idArray.contains(ids+"")) {
-                    CacheUtils.putString(mContext,ID_ARRAY,idArray+ids+",");
+                if (!idArray.contains(ids + "")) {
+                    CacheUtils.putString(mContext, ID_ARRAY, idArray + ids + ",");
+
+                    adapter.notifyDataSetChanged();//getcount-->getView
+                    //2、刷新适配器
                 }
-                adapter.notifyDataSetChanged();//getcount-->getView
-                //2、刷新适配器
-
-
+                //跳转到新闻的浏览页面
+                Intent intent = new Intent(mContext,NewsDetailActivity.class);
+                intent.putExtra("url",Constants.BASE_URL+newsEntity.getUrl());
+                mContext.startActivity(intent);
             }
+
         });
         return view;
     }
@@ -262,11 +269,11 @@ public class TabDetailPager extends MenuDetailBasePager {
         TabDetailPagerBean pagerBean = new Gson().fromJson(json, TabDetailPagerBean.class);
 
         String more = pagerBean.getData().getMore();
-               if(TextUtils.isEmpty(more)){
-                      moreUrl = "";
-                  }else{
-                       moreUrl = Constants.BASE_URL + more;
-                   }
+        if (TextUtils.isEmpty(more)) {
+            moreUrl = "";
+        } else {
+            moreUrl = Constants.BASE_URL + more;
+        }
 
         if (!isLoadMore) {
 
