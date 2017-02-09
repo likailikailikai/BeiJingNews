@@ -2,10 +2,13 @@ package com.atguigu.beijingnews.detailpager;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -264,7 +267,7 @@ public class TabDetailPager extends MenuDetailBasePager {
             }
         });
     }
-
+    private IntetnalHandler handler;
     private void processData(String json) {
         TabDetailPagerBean pagerBean = new Gson().fromJson(json, TabDetailPagerBean.class);
 
@@ -324,7 +327,36 @@ public class TabDetailPager extends MenuDetailBasePager {
 
         }
 
+        //顶部轮播图
+        if(handler == null) {
+            handler = new IntetnalHandler();
+        }
+        //把之前的所有消息和任务消除
+        handler.removeCallbacksAndMessages(null);
 
+        handler.postDelayed(new MyRunnable(),3000);
+
+    }
+
+    class IntetnalHandler extends Handler{
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+
+            //切换到下一个页面
+            int item = (viewpager.getCurrentItem()+1)%topnews.size();
+            viewpager.setCurrentItem(item);
+            handler.postDelayed(new MyRunnable(),3000);
+
+        }
+    }
+
+    class MyRunnable implements Runnable{
+
+        @Override
+        public void run() {
+            handler.sendEmptyMessage(0);
+        }
     }
 
     class MyOnPageChangeListener implements ViewPager.OnPageChangeListener {
@@ -347,7 +379,12 @@ public class TabDetailPager extends MenuDetailBasePager {
 
         @Override
         public void onPageScrollStateChanged(int state) {
-
+            if(state == ViewPager.SCROLL_STATE_DRAGGING) {
+                handler.removeCallbacksAndMessages(null);
+            }else if(state == ViewPager.SCROLL_STATE_IDLE) {
+                handler.removeCallbacksAndMessages(null);
+                handler.postDelayed(new MyRunnable(),3000);
+            }
         }
     }
 
@@ -378,6 +415,22 @@ public class TabDetailPager extends MenuDetailBasePager {
                     .into(imageView);
             //添加到ViewPager和返回
             container.addView(imageView);
+
+            //设置触摸事件
+            imageView.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    switch (event.getAction()){
+                        case MotionEvent.ACTION_DOWN:
+                            handler.removeCallbacksAndMessages(null);
+                            break;
+                        case MotionEvent.ACTION_UP:
+                            handler.postDelayed(new MyRunnable(),3000);
+                            break;
+                    }
+                    return true;
+                }
+            });
 
             return imageView;
         }
