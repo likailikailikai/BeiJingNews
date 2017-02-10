@@ -110,7 +110,7 @@ public class PhotosMenuDetailPager extends MenuDetailBasePager {
         Log.e("TAG", "数组解析数据成功===" + bean.getData().getNews().get(0).getTitle());
 
         //设置RecycerView的适配器
-        adapter = new PhotosMenuDetailPagerAdapter(mContext, bean.getData().getNews());
+        adapter = new PhotosMenuDetailPagerAdapter(mContext,bean.getData().getNews(),recyclerview);
         recyclerview.setAdapter(adapter);
 
         //设置布局管理器

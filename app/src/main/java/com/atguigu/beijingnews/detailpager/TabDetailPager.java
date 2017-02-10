@@ -105,7 +105,7 @@ public class TabDetailPager extends MenuDetailBasePager {
         listview.addHeaderView(headerView);
 
         SoundPullEventListener<ListView> soundListener = new SoundPullEventListener<ListView>(mContext);
-        soundListener.addSoundEvent(PullToRefreshBase.State.PULL_TO_REFRESH, R.raw.pull_event);
+        soundListener.addSoundEvent(PullToRefreshBase.State.PULL_TO_REFRESH, R.raw.liangliang);
         soundListener.addSoundEvent(PullToRefreshBase.State.RESET, R.raw.reset_sound);
         soundListener.addSoundEvent(PullToRefreshBase.State.REFRESHING, R.raw.refreshing_sound);
         refreshListView.setOnPullEventListener(soundListener);
