@@ -133,8 +133,8 @@ public class TabDetailPager extends MenuDetailBasePager {
                     //2、刷新适配器
                 }
                 //跳转到新闻的浏览页面
-                Intent intent = new Intent(mContext,NewsDetailActivity.class);
-                intent.putExtra("url",Constants.BASE_URL+newsEntity.getUrl());
+                Intent intent = new Intent(mContext, NewsDetailActivity.class);
+                intent.putExtra("url", Constants.BASE_URL + newsEntity.getUrl());
                 mContext.startActivity(intent);
             }
 
@@ -235,6 +235,10 @@ public class TabDetailPager extends MenuDetailBasePager {
         super.initData();
         url = Constants.BASE_URL + childrenBean.getUrl();
         Log.e("TAG", "TabDetailPager--url==" + url);
+        String saveJson = CacheUtils.getString(mContext, url);
+        if (!TextUtils.isEmpty(saveJson)) {
+            processData(saveJson);
+        }
         //设置数据
         getDataFromNet();
     }
@@ -245,6 +249,7 @@ public class TabDetailPager extends MenuDetailBasePager {
             @Override
             public void onSuccess(String result) {
                 Log.e("TAG", "请求数据成功==TabDetailPager==" + childrenBean.getTitle());
+                CacheUtils.putString(mContext,url,result);
                 processData(result);
                 //把下拉刷新和上拉刷新隐藏
                 refreshListView.onRefreshComplete();
@@ -267,7 +272,9 @@ public class TabDetailPager extends MenuDetailBasePager {
             }
         });
     }
+
     private IntetnalHandler handler;
+
     private void processData(String json) {
         TabDetailPagerBean pagerBean = new Gson().fromJson(json, TabDetailPagerBean.class);
 
@@ -328,30 +335,30 @@ public class TabDetailPager extends MenuDetailBasePager {
         }
 
         //顶部轮播图
-        if(handler == null) {
+        if (handler == null) {
             handler = new IntetnalHandler();
         }
         //把之前的所有消息和任务消除
         handler.removeCallbacksAndMessages(null);
 
-        handler.postDelayed(new MyRunnable(),3000);
+        handler.postDelayed(new MyRunnable(), 3000);
 
     }
 
-    class IntetnalHandler extends Handler{
+    class IntetnalHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
 
             //切换到下一个页面
-            int item = (viewpager.getCurrentItem()+1)%topnews.size();
+            int item = (viewpager.getCurrentItem() + 1) % topnews.size();
             viewpager.setCurrentItem(item);
-            handler.postDelayed(new MyRunnable(),3000);
+            handler.postDelayed(new MyRunnable(), 3000);
 
         }
     }
 
-    class MyRunnable implements Runnable{
+    class MyRunnable implements Runnable {
 
         @Override
         public void run() {
@@ -379,11 +386,11 @@ public class TabDetailPager extends MenuDetailBasePager {
 
         @Override
         public void onPageScrollStateChanged(int state) {
-            if(state == ViewPager.SCROLL_STATE_DRAGGING) {
+            if (state == ViewPager.SCROLL_STATE_DRAGGING) {
                 handler.removeCallbacksAndMessages(null);
-            }else if(state == ViewPager.SCROLL_STATE_IDLE) {
+            } else if (state == ViewPager.SCROLL_STATE_IDLE) {
                 handler.removeCallbacksAndMessages(null);
-                handler.postDelayed(new MyRunnable(),3000);
+                handler.postDelayed(new MyRunnable(), 3000);
             }
         }
     }
@@ -421,12 +428,12 @@ public class TabDetailPager extends MenuDetailBasePager {
             imageView.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
-                    switch (event.getAction()){
+                    switch (event.getAction()) {
                         case MotionEvent.ACTION_DOWN:
                             handler.removeCallbacksAndMessages(null);
                             break;
                         case MotionEvent.ACTION_UP:
-                            handler.postDelayed(new MyRunnable(),3000);
+                            handler.postDelayed(new MyRunnable(), 3000);
                             break;
                     }
                     return false;
@@ -437,8 +444,8 @@ public class TabDetailPager extends MenuDetailBasePager {
                 @Override
                 public void onClick(View view) {
                     //跳转到新闻的浏览页面
-                    Intent intent = new Intent(mContext,NewsDetailActivity.class);
-                    intent.putExtra("url",Constants.BASE_URL+topnewsEntity.getUrl());
+                    Intent intent = new Intent(mContext, NewsDetailActivity.class);
+                    intent.putExtra("url", Constants.BASE_URL + topnewsEntity.getUrl());
                     mContext.startActivity(intent);
                 }
             });
