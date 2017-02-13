@@ -83,7 +83,7 @@ public class PhotosMenuDetailPagerAdapter extends RecyclerView.Adapter<PhotosMen
                 .cacheOnDisk(true)
                 .considerExifParams(true)
                 .bitmapConfig(Bitmap.Config.RGB_565)
-                .displayer(new RoundedBitmapDisplayer(10))
+                .displayer(new RoundedBitmapDisplayer(50))
                 .build();
     }
 

@@ -2,6 +2,7 @@ package com.atguigu.beijingnews.base;
 
 import android.content.Context;
 import android.view.View;
+import android.widget.ImageButton;
 
 /**
  * Created by Baby on 2017/2/5.
@@ -35,4 +36,7 @@ public abstract class MenuDetailBasePager {
     public void  initData(){
 
     }
+
+
+
 }

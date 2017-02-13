@@ -19,6 +19,8 @@ import com.atguigu.beijingnews.base.MenuDetailBasePager;
 import com.atguigu.beijingnews.bean.NewsCenterBean;
 import com.atguigu.beijingnews.bean.PhotosMenuDetailPagerBean;
 import com.google.gson.Gson;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
 
 import org.xutils.common.Callback;
 import org.xutils.http.RequestParams;
@@ -26,6 +28,7 @@ import org.xutils.x;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import okhttp3.Call;
 
 
 /**
@@ -83,33 +86,55 @@ public class PhotosMenuDetailPager extends MenuDetailBasePager {
     }
 
     private void getDataFromNet(final String url) {
-        RequestParams params = new RequestParams(url);
-        x.http().get(params, new Callback.CommonCallback<String>() {
-            @Override
-            public void onSuccess(String result) {
-                Log.e("TAG", "图组数据请求成功=====");
-                CacheUtils.putString(mContext,url,result);
-                processData(result);
-                 Swipe_refresh_layout.setRefreshing(false);
+//        RequestParams params = new RequestParams(url);
+//        x.http().get(params, new Callback.CommonCallback<String>() {
+//            @Override
+//            public void onSuccess(String result) {
+//                Log.e("TAG", "图组数据请求成功=====");
+//                CacheUtils.putString(mContext,url,result);
+//                processData(result);
+//                 Swipe_refresh_layout.setRefreshing(false);
+//
+//            }
+//
+//            @Override
+//            public void onError(Throwable ex, boolean isOnCallback) {
+//                Log.e("TAG", "图组数据请求失败=====" + ex.getMessage());
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(CancelledException cex) {
+//
+//            }
+//
+//            @Override
+//            public void onFinished() {
+//
+//            }
+//        });
 
-            }
+        OkHttpUtils
+                .get()
+                .url(url)
+//                .addParams("username", "atguig")
+//                .addParams("password", "123")
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        Log.e("TAG", "okhttp图组数据请求失败==" + e.getMessage());
+                    }
 
-            @Override
-            public void onError(Throwable ex, boolean isOnCallback) {
-                Log.e("TAG", "图组数据请求失败=====" + ex.getMessage());
+                    @Override
+                    public void onResponse(String response, int id) {
+                        Log.e("TAG", "okhttp图组数据请求成功==");
+                        CacheUtils.putString(mContext, url, response);
+                        processData(response);
+                        Swipe_refresh_layout.setRefreshing(false);
+                    }
+                });
 
-            }
-
-            @Override
-            public void onCancelled(CancelledException cex) {
-
-            }
-
-            @Override
-            public void onFinished() {
-
-            }
-        });
     }
 
     private void processData(String json) {
@@ -145,4 +170,7 @@ public class PhotosMenuDetailPager extends MenuDetailBasePager {
         }
 
     }
+
+
+
 }
